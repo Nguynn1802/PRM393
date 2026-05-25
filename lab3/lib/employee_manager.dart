@@ -5,11 +5,11 @@ class EmployeeManager {
 
   void addEmployee(Employee emp) {
     if (_employees.containsKey(emp.id)) {
-      print("❌ Lỗi: ID nhân viên ${emp.id} đã tồn tại trong hệ thống!");
+      print("Error: Employee ID ${emp.id} already exists!");
       return;
     }
     _employees[emp.id] = emp;
-    print("✅ Đã thêm nhân viên ${emp.fullName} thành công.");
+    print("Success: Added employee ${emp.fullName}.");
   }
 
   void displayAllEmployees() {
@@ -25,46 +25,46 @@ class EmployeeManager {
   }
 
   void searchEmployeeById(String id) {
-    Employee? emp = _employees[id];
+    var emp = _employees[id];
     if (emp == null) {
-      print("❌ Không tìm thấy nhân viên nào có ID: $id");
-    } else {
-      print("🔍 Đã tìm thấy nhân viên:");
-      emp.displayInfo();
+      print("Error: Candidate with ID $id not found.");
+      return;
     }
+    print("Result found:");
+    emp.displayInfo();
   }
 
   void deleteEmployeeById(String id) {
-    Employee? removedEmp = _employees.remove(id);
-    if (removedEmp == null) {
-      print("❌ Xóa thất bại! Không tồn tại nhân viên có ID: $id.");
+    var removed = _employees.remove(id);
+    if (removed == null) {
+      print("Error: Cannot delete. ID $id does not exist.");
     } else {
-      print("🗑️ Đã xóa thành công nhân viên ${removedEmp.fullName} (ID: $id).");
+      print("Success: Deleted employee ${removed.fullName} (ID: $id).");
     }
   }
 
   void updateEmployee(String id, String newName, double newSalary) {
-    Employee? emp = _employees[id];
+    var emp = _employees[id];
     if (emp == null) {
-      print("❌ Không tìm thấy nhân viên có ID: $id để cập nhật.");
+      print("Error: Candidate with ID $id not found for update.");
       return;
     }
     emp.fullName = newName;
     emp.baseSalary = newSalary;
-    print("✅ Đã cập nhật thông tin mới thành công.");
+    print("Success: Updated information for ID $id.");
   }
 
   void searchByIncomeRange(double minIncome, double maxIncome) {
-    var results = _employees.values.where((emp) {
-      double income = emp.getIncome();
-      return income >= minIncome && income <= maxIncome;
-    }).toList();
+    var results = _employees.values
+        .where((e) => e.getIncome() >= minIncome && e.getIncome() <= maxIncome)
+        .toList();
 
     if (results.isEmpty) {
-      print("❌ Không có nhân viên nào có thu nhập trong khoảng từ $minIncome đến $maxIncome.");
+      print("No employees found within the income range: $minIncome - $maxIncome");
       return;
     }
-    print("\n🔍 --- EMPLOYEES IN INCOME RANGE ---");
+
+    print("\n--- EMPLOYEES IN INCOME RANGE ($minIncome - $maxIncome) ---");
     for (var emp in results) {
       emp.displayInfo();
       print("-" * 30);
@@ -72,32 +72,35 @@ class EmployeeManager {
   }
 
   void sortByFullName() {
-    List<Employee> empList = _employees.values.toList();
+    var empList = _employees.values.toList();
     empList.sort((a, b) => a.fullName.compareTo(b.fullName));
-    print("\n🔤 --- LIST SORTED BY FULL NAME (A-Z) ---");
+
+    print("\n--- LIST SORTED BY FULL NAME (A-Z) ---");
     for (var emp in empList) {
-      print("Tên: ${emp.fullName} | ID: ${emp.id} | Thu nhập: ${emp.getIncome().toStringAsFixed(0)}");
+      print("Name: ${emp.fullName} | ID: ${emp.id} | Income: ${emp.getIncome().toStringAsFixed(0)}");
     }
   }
 
   void sortByTotalIncome() {
-    List<Employee> empList = _employees.values.toList();
+    var empList = _employees.values.toList();
     empList.sort((a, b) => a.getIncome().compareTo(b.getIncome()));
-    print("\n💰 --- LIST SORTED BY TOTAL INCOME (ASCENDING) ---");
+
+    print("\n--- LIST SORTED BY TOTAL INCOME (ASCENDING) ---");
     for (var emp in empList) {
-      print("ID: ${emp.id} | Tên: ${emp.fullName} | Thu nhập: ${emp.getIncome().toStringAsFixed(0)}");
+      print("ID: ${emp.id} | Name: ${emp.fullName} | Income: ${emp.getIncome().toStringAsFixed(0)}");
     }
   }
 
   void displayTop5HighestIncome() {
-    List<Employee> empList = _employees.values.toList();
+    var empList = _employees.values.toList();
+    // Sort descending
     empList.sort((a, b) => b.getIncome().compareTo(a.getIncome()));
+    
     var top5 = empList.take(5).toList();
-    print("\n🏆 --- TOP 5 HIGHEST INCOME EMPLOYEES ---");
-    int rank = 1;
-    for (var emp in top5) {
-      print("Top $rank: ID: ${emp.id} | Tên: ${emp.fullName} | Thu nhập: ${emp.getIncome().toStringAsFixed(0)}");
-      rank++;
+    print("\n--- TOP 5 HIGHEST INCOME EMPLOYEES ---");
+    for (var i = 0; i < top5.length; i++) {
+      var emp = top5[i];
+      print("Top ${i + 1}: ID: ${emp.id} | Name: ${emp.fullName} | Income: ${emp.getIncome().toStringAsFixed(0)}");
     }
   }
 }

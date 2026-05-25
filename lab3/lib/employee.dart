@@ -17,7 +17,7 @@ abstract class Employee {
   double getIncome();
 
   double getTax() {
-    double income = getIncome();
+    var income = getIncome();
     if (income < 9000000) return 0.0;
     if (income <= 15000000) return income * 0.1;
     return income * 0.12;
